@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="The Bar Graph — interactive scatter plots mapping bars and restaurants by vibe and food quality. Find your city."/>
+  <title>The Bar Graph</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      color: #f5e4c0;
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 64px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .title {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: clamp(44px, 9vw, 80px);
+      letter-spacing: 0.06em;
+      color: #fff;
+      line-height: 1;
+    }
+    .title .bar { color: #4ab8e8; }
+
+    .tagline {
+      margin-top: 14px;
+      color: #555;
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      width: 48px; height: 2px;
+      background: #e8a534;
+      margin: 20px auto 0;
+      opacity: 0.4;
+      border-radius: 2px;
+    }
+
+    .cities {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 860px;
+      animation: fadeUp 0.5s ease 0.1s both;
+    }
+
+    .city-card {
+      display: block;
+      text-decoration: none;
+      background: #0f0f0f;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .city-card:hover {
+      border-color: #4ab8e8;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(74,184,232,0.12);
+    }
+
+    .city-emoji { font-size: 28px; margin-bottom: 12px; display: block; }
+
+    .city-name {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+    .city-state { color: #4ab8e8; }
+
+    .city-meta {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .city-count {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 11px;
+      color: #4ab8e8;
+      border: 1px solid rgba(74,184,232,0.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .city-card.coming-soon {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .city-card.coming-soon .city-count {
+      color: #555;
+      border-color: #1e1e1e;
+    }
+
+    .how {
+      margin-top: 72px;
+      text-align: center;
+      max-width: 560px;
+      animation: fadeUp 0.5s ease 0.2s both;
+    }
+
+    .how h2 {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .axes {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .axis { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+    .axis-line {
+      width: 120px; height: 1px;
+      background: linear-gradient(to right, #555, #4ab8e8);
+      position: relative;
+    }
+    .axis-line::after {
+      content: '▶';
+      position: absolute; right: -8px; top: -6px;
+      font-size: 10px; color: #4ab8e8;
+    }
+
+    .axis-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 120px;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    footer {
+      margin-top: 72px;
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 0.1em;
+      text-align: center;
+      animation: fadeUp 0.5s ease 0.3s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 40px 16px 60px; }
+      header { margin-bottom: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title">THE <span class="bar">BAR</span> GRAPH</div>
+    <p class="tagline">Find your city's best bars &amp; restaurants</p>
+    <div class="divider"></div>
+  </header>
+
+  <div class="cities">
+
+    <a class="city-card" href="https://palatine.bargraph.city">
+      <span class="city-emoji">🍺</span>
+      <div class="city-name">PALATINE <span class="city-state">IL</span></div>
+      <div class="city-meta">Northwest Chicago Suburbs</div>
+      <span class="city-count">37 spots</span>
+    </a>
+
+    <a class="city-card" href="https://stl.bargraph.city">
+      <span class="city-emoji">🦀</span>
+      <div class="city-name">ST. LOUIS <span class="city-state">MO</span></div>
+      <div class="city-meta">Gateway City</div>
+      <span class="city-count">44 spots</span>
+    </a>
+
+    <a class="city-card" href="https://sisterlakes.bargraph.city">
+      <span class="city-emoji">🏖️</span>
+      <div class="city-name">SISTER LAKES <span class="city-state">MI</span></div>
+      <div class="city-meta">Southwest Michigan</div>
+      <span class="city-count">Live</span>
+    </a>
+
+    <div class="city-card coming-soon">
+      <span class="city-emoji">📍</span>
+      <div class="city-name">YOUR CITY <span class="city-state">??</span></div>
+      <div class="city-meta">Coming soon</div>
+      <span class="city-count">Next up</span>
+    </div>
+
+  </div>
+
+  <div class="how">
+    <h2>How it works</h2>
+    <div class="axes">
+      <div class="axis">
+        <div class="axis-line"></div>
+        <div class="axis-labels"><span>Dive</span><span>Classy</span></div>
+      </div>
+      <div class="axis">
+        <div class="axis-line"></div>
+        <div class="axis-labels"><span>Just drinks</span><span>Dining</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 bargraph.city</p>
+  </footer>
+
+</body>
+</html>
